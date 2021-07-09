@@ -5,17 +5,19 @@ import java.util.concurrent.CountDownLatch;
 
 public class Warming implements Runnable {
     private CountDownLatch latch;
+    private BackSystem bs;
     Random random = new Random();
 
-    public Warming(CountDownLatch latch) {
+    public Warming(CountDownLatch latch, BackSystem bs) {
         this.latch = latch;
+        this.bs = bs;
     }
 
     @Override
     public void run() {
         try {
-            Thread.sleep(5000);
-            System.out.println("Thread well done");
+            BackSystem.balance.addAndGet(random.nextInt(10000-5000)+5000);
+            Thread.sleep(random.nextInt(10000-5000)+5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

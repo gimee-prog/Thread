@@ -1,27 +1,18 @@
 package com.company;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class FrontSystem {
 
-   volatile static Deque<Request> requestQueue = new LinkedList<>();
+   static BlockingQueue<Request> requestQueue = new ArrayBlockingQueue<>(2);
+//Очередь с фиксированным размером, блокирует добавление новых элементов если очередь полна и удаление если пуста
+    public  void addRequest(Request request) throws InterruptedException {
+            requestQueue.put(request);
+            System.out.println("Клиент №" + request.getId() + ":Заявка №" + request.getId() + " принята банком" + "{" + request.getName() + ", сумма= " + request.getAmount() + " , тип операции: " + request.getRequestType());
+            }
 
-    public synchronized void addRequest(Request request) throws InterruptedException {
-        while (requestQueue.size() == 2){
-            wait();
-        }
-        requestQueue.addFirst(request);
-        System.out.println("Клиент №"+request.getId()+":Заявка №"+request.getId()+" принята банком" + "{" +request.getName()+ ", сумма= " +request.getAmount()+" , тип операции: " + request.getRequestType());
-        notifyAll();
-    }
-    public  synchronized Request getRequest() throws InterruptedException {
-        while (requestQueue.size() == 0){
-            wait();
-        }
-        notifyAll();
-     return requestQueue.removeLast();
+    public  Request getRequest() throws InterruptedException {
+     return requestQueue.take();
     }
 }
