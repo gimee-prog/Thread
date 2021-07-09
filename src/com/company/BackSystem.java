@@ -6,7 +6,6 @@ public class BackSystem extends Thread {
     int treatmentId;
      static AtomicInteger balance= new AtomicInteger(0);
 
-
     public void treatmentRequest(Request request) {
 
         if (request.getRequestType() == "CREDIT"){
