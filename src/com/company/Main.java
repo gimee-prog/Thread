@@ -1,7 +1,19 @@
 package com.company;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class Main {
-    public static void main(String[] args){
+    public static void main(String[] args) throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(3);
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        for (int i = 0; i < 3; i++)
+            executorService.submit(new Warming(latch));
+
+        executorService.shutdown();
+        latch.await();
+
         FrontSystem fs = new FrontSystem();
         BackSystem bs = new BackSystem();
         new Client(1, fs, 5000, "CREDIT").start();
